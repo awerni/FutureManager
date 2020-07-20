@@ -1,4 +1,4 @@
-# FutureManager
+# FutureManager [![Build Status](https://travis-ci.com/mjakubczak/FutureManager.svg?branch=master)](https://travis-ci.com/mjakubczak/FutureManager)
 
 Does your shiny application run some time consuming calculations? Would you like your app to do some other things while waiting for the results? Are you tired of forcing your functions to use `%...>%` operator? Here's the FutureManager!
 
