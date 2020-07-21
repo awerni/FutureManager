@@ -88,58 +88,5 @@ test_that(
       expected = "wait for the process"
     )
     expect_true("fm-wait" %in% plot$type)
-    
-    runClick(app, "plot_run", TRUE) # cancel the process
-    
-    app$waitFor( # wait for the cancel
-      expr = "$('#plot').text() === 'run the process first';",
-      checkInterval = 500,
-      timeout = 2000 # 2s
-    )
-    
-    plotBtn <- app$findElement("#plot_run")
-    expect_true("btn-danger" %in% plotBtn$getClass())
-    
-    # expected error in the process (fmError)
-    app$setInputs(xVar = "Species")
-    runClick(app, "plot_run")
-    
-    app$waitFor(
-      expr = "$('#plot').hasClass('shiny-output-error-fm-failed');",
-      checkInterval = 500,
-      timeout = 2000 # 2s
-    )
-    
-    plot <- getValue(app, "plot", FALSE)
-    expect_equal(
-      object = plot$message,
-      expected = "Species column not allowed as xVar"
-    )
-    expect_true("fm-failed" %in% plot$type)
-    
-    plotBtn <- app$findElement("#plot_run")
-    expect_true("btn-danger" %in% plotBtn$getClass())
-    
-    # unexpected error in the process (stop)
-    app$setInputs(xVar = "Sepal.Width")
-    app$setInputs(yVar = "Species")
-    
-    runClick(app, "plot_run")
-    
-    app$waitFor(
-      expr = "! $('#plot').hasClass('shiny-output-error-validation');",
-      checkInterval = 500,
-      timeout = 2000 # 2s
-    )
-
-    plot <- getValue(app, "plot", FALSE)
-    expect_equal(
-      object = plot$message,
-      expected = "Species column not allowed as yVar"
-    )
-    expect_null(plot$type)
-
-    plotBtn <- app$findElement("#plot_run")
-    expect_true("btn-danger" %in% plotBtn$getClass())
   }
 )
