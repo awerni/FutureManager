@@ -7,17 +7,9 @@ future::plan
 #' @export
 future::sequential
 
-#' @importFrom future transparent
-#' @export
-future::transparent
-
 #' @importFrom future cluster
 #' @export
 future::cluster
-
-#' @importFrom future remote
-#' @export
-future::remote
 
 #' @importFrom future supportsMulticore
 #' @export
