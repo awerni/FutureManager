@@ -25,22 +25,22 @@ fmIsInterrupted() for details
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{FutureManager$new()}}
-\item \href{#method-showProgress}{\code{FutureManager$showProgress()}}
-\item \href{#method-run}{\code{FutureManager$run()}}
-\item \href{#method-cancel}{\code{FutureManager$cancel()}}
-\item \href{#method-initButtonState}{\code{FutureManager$initButtonState()}}
-\item \href{#method-getButtonState}{\code{FutureManager$getButtonState()}}
-\item \href{#method-updateButtonState}{\code{FutureManager$updateButtonState()}}
-\item \href{#method-outdateRun}{\code{FutureManager$outdateRun()}}
-\item \href{#method-outdateRuns}{\code{FutureManager$outdateRuns()}}
-\item \href{#method-registerRunObserver}{\code{FutureManager$registerRunObserver()}}
-\item \href{#method-clone}{\code{FutureManager$clone()}}
+\item \href{#method-FutureManager-new}{\code{FutureManager$new()}}
+\item \href{#method-FutureManager-showProgress}{\code{FutureManager$showProgress()}}
+\item \href{#method-FutureManager-run}{\code{FutureManager$run()}}
+\item \href{#method-FutureManager-cancel}{\code{FutureManager$cancel()}}
+\item \href{#method-FutureManager-initButtonState}{\code{FutureManager$initButtonState()}}
+\item \href{#method-FutureManager-getButtonState}{\code{FutureManager$getButtonState()}}
+\item \href{#method-FutureManager-updateButtonState}{\code{FutureManager$updateButtonState()}}
+\item \href{#method-FutureManager-outdateRun}{\code{FutureManager$outdateRun()}}
+\item \href{#method-FutureManager-outdateRuns}{\code{FutureManager$outdateRuns()}}
+\item \href{#method-FutureManager-registerRunObserver}{\code{FutureManager$registerRunObserver()}}
+\item \href{#method-FutureManager-clone}{\code{FutureManager$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-FutureManager-new"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new manager object
 \subsection{Usage}{
@@ -70,8 +70,8 @@ MinimalProgress object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-showProgress"></a>}}
-\if{latex}{\out{\hypertarget{method-showProgress}{}}}
+\if{html}{\out{<a id="method-FutureManager-showProgress"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-showProgress}{}}}
 \subsection{Method \code{showProgress()}}{
 Show progress bar for a specific task
 \subsection{Usage}{
@@ -104,8 +104,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-run"></a>}}
-\if{latex}{\out{\hypertarget{method-run}{}}}
+\if{html}{\out{<a id="method-FutureManager-run"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-run}{}}}
 \subsection{Method \code{run()}}{
 Run background process
 \subsection{Usage}{
@@ -150,8 +150,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-cancel"></a>}}
-\if{latex}{\out{\hypertarget{method-cancel}{}}}
+\if{html}{\out{<a id="method-FutureManager-cancel"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-cancel}{}}}
 \subsection{Method \code{cancel()}}{
 Cancel the background process
 \subsection{Usage}{
@@ -170,8 +170,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-initButtonState"></a>}}
-\if{latex}{\out{\hypertarget{method-initButtonState}{}}}
+\if{html}{\out{<a id="method-FutureManager-initButtonState"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-initButtonState}{}}}
 \subsection{Method \code{initButtonState()}}{
 Init button state if not initialized yet
 \subsection{Usage}{
@@ -192,8 +192,8 @@ current button state
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getButtonState"></a>}}
-\if{latex}{\out{\hypertarget{method-getButtonState}{}}}
+\if{html}{\out{<a id="method-FutureManager-getButtonState"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-getButtonState}{}}}
 \subsection{Method \code{getButtonState()}}{
 Get button state
 \subsection{Usage}{
@@ -212,8 +212,8 @@ current button state
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-updateButtonState"></a>}}
-\if{latex}{\out{\hypertarget{method-updateButtonState}{}}}
+\if{html}{\out{<a id="method-FutureManager-updateButtonState"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-updateButtonState}{}}}
 \subsection{Method \code{updateButtonState()}}{
 Update button state
 \subsection{Usage}{
@@ -236,8 +236,8 @@ current button state
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-outdateRun"></a>}}
-\if{latex}{\out{\hypertarget{method-outdateRun}{}}}
+\if{html}{\out{<a id="method-FutureManager-outdateRun"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-outdateRun}{}}}
 \subsection{Method \code{outdateRun()}}{
 Outdate (invalidate) the process
 \subsection{Usage}{
@@ -258,8 +258,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-outdateRuns"></a>}}
-\if{latex}{\out{\hypertarget{method-outdateRuns}{}}}
+\if{html}{\out{<a id="method-FutureManager-outdateRuns"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-outdateRuns}{}}}
 \subsection{Method \code{outdateRuns()}}{
 Outdate (invalidate) all processes
 \subsection{Usage}{
@@ -278,8 +278,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-registerRunObserver"></a>}}
-\if{latex}{\out{\hypertarget{method-registerRunObserver}{}}}
+\if{html}{\out{<a id="method-FutureManager-registerRunObserver"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-registerRunObserver}{}}}
 \subsection{Method \code{registerRunObserver()}}{
 Register run observer
 \subsection{Usage}{
@@ -324,8 +324,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-FutureManager-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-FutureManager-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

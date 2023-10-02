@@ -16,16 +16,16 @@ in the app frontend. Also, the interface is simplified.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{MinimalProgress$new()}}
-\item \href{#method-open}{\code{MinimalProgress$open()}}
-\item \href{#method-close}{\code{MinimalProgress$close()}}
-\item \href{#method-set}{\code{MinimalProgress$set()}}
-\item \href{#method-clone}{\code{MinimalProgress$clone()}}
+\item \href{#method-MinimalProgress-new}{\code{MinimalProgress$new()}}
+\item \href{#method-MinimalProgress-open}{\code{MinimalProgress$open()}}
+\item \href{#method-MinimalProgress-close}{\code{MinimalProgress$close()}}
+\item \href{#method-MinimalProgress-set}{\code{MinimalProgress$set()}}
+\item \href{#method-MinimalProgress-clone}{\code{MinimalProgress$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-MinimalProgress-new"></a>}}
+\if{latex}{\out{\hypertarget{method-MinimalProgress-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new progress object
 \subsection{Usage}{
@@ -46,8 +46,8 @@ MinimalProgress object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-open"></a>}}
-\if{latex}{\out{\hypertarget{method-open}{}}}
+\if{html}{\out{<a id="method-MinimalProgress-open"></a>}}
+\if{latex}{\out{\hypertarget{method-MinimalProgress-open}{}}}
 \subsection{Method \code{open()}}{
 Opens the progress bar in the frontend
 \subsection{Usage}{
@@ -59,8 +59,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-close"></a>}}
-\if{latex}{\out{\hypertarget{method-close}{}}}
+\if{html}{\out{<a id="method-MinimalProgress-close"></a>}}
+\if{latex}{\out{\hypertarget{method-MinimalProgress-close}{}}}
 \subsection{Method \code{close()}}{
 Close the progress bar in the frontend
 \subsection{Usage}{
@@ -72,8 +72,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set"></a>}}
-\if{latex}{\out{\hypertarget{method-set}{}}}
+\if{html}{\out{<a id="method-MinimalProgress-set"></a>}}
+\if{latex}{\out{\hypertarget{method-MinimalProgress-set}{}}}
 \subsection{Method \code{set()}}{
 Set a progress bar state
 \subsection{Usage}{
@@ -96,8 +96,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-MinimalProgress-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-MinimalProgress-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

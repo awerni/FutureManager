@@ -1,9 +1,5 @@
 library(testthat)
 library(FutureManager)
-library(shinytest)
-
-if (!shinytest::dependenciesInstalled()){
-  shinytest::installDependencies()
-}
+library(shinytest2)
 
 test_check("FutureManager")

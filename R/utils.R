@@ -336,3 +336,32 @@ fmNeed <- function(x, msgInit = "run the process first", msgRun = "wait for the 
 fmGenerateTaskId <- function(id){
   paste(id, sample(1e6, 1), sep = "_")
 }
+
+addClass <- function(tag, add){
+  tag$attribs$class <- paste(tag$attribs$class, add)
+  return(tag)
+}
+
+removeClass <- function(tag, remove){
+  if (length(remove) == 1){
+    remove <- strsplit(remove, " ", fixed = TRUE)[[1]]
+  }
+    
+  class <- strsplit(tag$attribs$class, " ", fixed = TRUE)[[1]]
+  class <- class[!(class %in% remove)]
+  tag$attribs$class <- paste(class, collapse = " ")
+  
+  return(tag)
+}
+
+addAttribs <- function(tag, ...){
+  a <- list(...)
+  for (i in seq(length(a))) {
+    tag$attribs[names(a)[i]] = a[[i]]
+  }
+  return(tag)
+}
+
+dropNulls <- function(x){
+  x[!vapply(x, is.null, FUN.VALUE = logical(1))]
+}

@@ -1,7 +1,12 @@
-#' @import shinyBS
-
 # nocov start
 .onLoad <- function(libname, pkgname){
-  options(future.globals.onReference = "ignore")
+  options(
+    FutureManager.labels.run = "Run",
+    FutureManager.labels.cancel = "Cancel",
+    FutureManager.labels.ready = "Ready",
+    FutureManager.labels.rerun = "Re-run required",
+    FutureManager.labels.missing = "Missing input",
+    future.globals.onReference = "ignore"
+  )
 }
 # nocov end

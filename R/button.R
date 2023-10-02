@@ -16,31 +16,35 @@ fmRunButton <- function(inputId, fm, defaultValue = FALSE, blocked = FALSE){
     inputId = inputId,
     defaultValue = defaultValue
   )
+  status <- buttonState$status
   
   if (blocked){
-    style <- "warning"
+    status <- "blocked"
     disabled <- TRUE
   } else {
-    style <- getStyleForStatus(buttonState$status)
-    disabled <- style == "success"
+    disabled <- status == "success"
   }
   
+  style <- getStyleForStatus(status)
+  
   shiny::tagList(
-    shinyBS::bsButton(
+    bsButton(
       inputId = inputId,
-      label = NULL, # controlled in CSS
+      label = getLabelForStatus(status),
       value = buttonState$value,
       style = style,
       disabled = disabled,
       type = "toggle",
-      class = "fm-run"
+      class = "fm-run",
+      `data-cancelText` = getOption("FutureManager.labels.cancel")
     ),
     htmltools::htmlDependency(
       name = "FutureManager",
       package = "FutureManager",
       version = utils::packageVersion("FutureManager"),
       src = "FutureManager",
-      stylesheet = "FutureManager.css"
+      stylesheet = "FutureManager.css",
+      script = "FutureManager.js"
     )
   )
 }
@@ -71,9 +75,10 @@ fmUpdateRunButton <- function(inputId, status, fm, session = shiny::getDefaultRe
     status = status
   )
   
-  shinyBS::updateButton(
+  updateButton(
     session = session,
     inputId = inputId,
+    label = getLabelForStatus(status),
     value = FALSE,
     style = getStyleForStatus(status),
     disabled = isSuccess
@@ -87,5 +92,90 @@ getStyleForStatus <- function(status){
     rerun = "danger",
     blocked = "warning",
     "default"
+  )
+}
+
+getLabelForStatus <- function(status){
+  switch(
+    EXPR = status,
+    success = getOption("FutureManager.labels.ready"),
+    rerun = getOption("FutureManager.labels.rerun"),
+    blocked = getOption("FutureManager.labels.missing"),
+    getOption("FutureManager.labels.run")
+  )
+}
+
+# from shinyBS
+
+bsButton <- function (inputId, label, icon = NULL, ..., style = "default", 
+                      size = "default", type = "action", block = FALSE, disabled = FALSE, 
+                      value = FALSE){
+  btn <- shiny::actionButton(
+    inputId = inputId, 
+    label = label, 
+    icon = icon, 
+    ...
+  )
+  
+  if (type == "toggle") {
+    btn <- removeClass(btn, "action-button")
+    btn <- addClass(btn, "sbs-toggle-button")
+    if (value == TRUE) {
+      btn <- addClass(btn, "active")
+    }
+  }
+  
+  if (style != "default") {
+    btn <- removeClass(btn, "btn-default")
+    btn <- addClass(btn, paste0("btn-", style))
+  }
+  
+  size <- getButtonSizeClass(size)
+  if (size != "default") {
+    btn <- addClass(btn, size)
+  }
+  
+  if (block == TRUE) {
+    btn <- addClass(btn, "btn-block")
+  }
+  
+  if (disabled) {
+    btn <- addAttribs(btn, disabled = "disabled")
+  }
+  
+  btn
+}
+
+updateButton <- function (session, inputId, label = NULL, icon = NULL, value = NULL, 
+                          style = NULL, size = NULL, block = NULL, disabled = NULL) {
+  if (!is.null(icon)){
+    icon <- as.character(icon)
+  }
+    
+  if (!is.null(size)) {
+    size <- getButtonSizeClass(size)
+  }
+  
+  data <- dropNulls(list(
+    id = inputId, 
+    label = label, 
+    icon = icon, 
+    value = value, 
+    style = style, 
+    size = size, 
+    block = block, 
+    disabled = disabled
+  ))
+  
+  session$sendCustomMessage("fmButtonUpdate", data)
+}
+
+getButtonSizeClass <- function(size){
+  switch(
+    EXPR = size, 
+    `extra-small` = "btn-xs", 
+    small = "btn-sm", 
+    large = "btn-lg", 
+    default = "default"
   )
 }

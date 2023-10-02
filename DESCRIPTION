@@ -10,8 +10,7 @@ Description: Enables background operations in shiny.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends:
-      R (>= 3.6.0),
-      shinyBS
+      R (>= 3.6.0)
 Imports:
       R6,
       future,
@@ -24,10 +23,10 @@ Imports:
       magrittr,
       methods,
       utils
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Suggests:
     testthat (>= 2.1.0),
-    shinytest,
+    shinytest2,
     ggplot2,
     knitr,
     rmarkdown
