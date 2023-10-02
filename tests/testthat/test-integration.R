@@ -1,37 +1,31 @@
 runClick <- function(app, id, cancel = FALSE){
-  app$executeScript(sprintf("$('#%s').click();", id))
-  app$waitForValue(
-    name = id, 
-    iotype = "input",
+  app$run_js(script = sprintf("$('#%s').click();", id))
+  app$wait_for_value(
+    input = id,
     ignore = list(cancel, NULL),
     timeout = 20000
   )
 }
 
 getValue <- function(app, name, input = TRUE){
-  state <- app$getAllValues(
-    input = input,
-    output = !input,
-    export = FALSE
-  )
-  state[[1]][[name]]
+  if (input){
+    app$get_value(input = name)
+  } else {
+    app$get_value(output = name)
+  }
 }
 
 test_that(
   desc = "Run tasks work properly",
   code = {
-    
     testthat::skip_on_cran()
     
     # run the app
-    app <- shinytest::ShinyDriver$new(
-      path = system.file("demoapp", package = "FutureManager"),
-      loadTimeout = 10000 # 10s to spin up processes in Rstudio
+    app <- shinytest2::AppDriver$new(
+      app_dir = system.file("demoapp", package = "FutureManager"),
+      load_timeout = 10000
     )
-    app$waitForValue( # wait for the UI render
-      name = "yVar", 
-      iotype = "input"
-    )
+    app$wait_for_value(input = "yVar")
     
     # check the initial state
     plot <- getValue(app, "plot", FALSE)
@@ -45,24 +39,21 @@ test_that(
     t_start <- Sys.time()
     runClick(app, "plot_run")
     
-    app$setInputs(tabset = "table")
-    app$waitForValue( # wait for the UI render
-      name = "nRows", 
-      iotype = "input"
-    )
+    app$set_inputs(tabset = "table")
+    app$wait_for_value(input = "nRows") # wait for the UI render
     runClick(app, "table_run") # turn on table calculations
     
     # verify running state
-    app$setInputs(tabset = "plot") # go back to plot
+    app$set_inputs(tabset = "plot") # go back to plot
     t_init <- Sys.time() - t_start 
     
     # check responsiveness of the app during the calculations and also if the app keeps the state
     expect_true(getValue(app, "plot_run"))
     
     # wait for the results
-    app$waitFor(
-      expr = "$('#plot').find('img').length;",
-      checkInterval = 500,
+    app$wait_for_js(
+      script = "$('#plot').find('img').length;",
+      interval = 500,
       timeout = 25000 # 25s
     )
     
@@ -75,15 +66,16 @@ test_that(
     expect_true(t_total > 10 && t_total < 19)
     
     # verify button state
-    plotBtn <- app$findElement("#plot_run")
-    expect_true("btn-success" %in% plotBtn$getClass())
+    isBtnSuccess <- app$get_js("$('#plot_run').hasClass('btn-success')")
+    expect_true(isBtnSuccess)
     
     # verify button invalidation
-    app$setInputs(xVar = "Petal.Width")
-    plotBtn <- app$findElement("#plot_run")
-    expect_true("btn-danger" %in% plotBtn$getClass())
+    app$set_inputs(xVar = "Petal.Width")
     
-    app$setInputs(xVar = "Petal.Length")
+    isBtnDanger <- app$get_js("$('#plot_run').hasClass('btn-danger')")
+    expect_true(isBtnDanger)
+    
+    app$set_inputs(xVar = "Petal.Length")
     runClick(app, "plot_run")
     
     plot <- getValue(app, "plot", FALSE)
@@ -99,40 +91,37 @@ test_that(
 test_that(
   desc = "Cancel and error handling",
   code = {
-    
     testthat::skip_on_cran()
     
-    app <- shinytest::ShinyDriver$new(
-      path = system.file("demoapp", package = "FutureManager"),
-      loadTimeout = 10000 # 10s to spin up processes in Rstudio
+    app <- shinytest2::AppDriver$new(
+      app_dir = system.file("demoapp", package = "FutureManager"),
+      load_timeout = 10000
     )
-    app$waitForValue( # wait for the UI render
-      name = "yVar", 
-      iotype = "input"
-    )
+    app$wait_for_value(input = "yVar")
+    
     runClick(app, "plot_run")
     Sys.sleep(1)
-    app$setInputs(xVar = "Petal.Length")
+    app$set_inputs(xVar = "Petal.Length")
     Sys.sleep(2)
     
     runClick(app, "plot_run", TRUE) # cancel the process
     
-    app$waitFor( # wait for the cancel
-      expr = "$('#plot').text() === 'run the process first';",
-      checkInterval = 500,
+    app$wait_for_js(
+      script = "$('#plot').text() === 'run the process first';",
+      interval = 500,
       timeout = 2000 # 2s
     )
     
-    plotBtn <- app$findElement("#plot_run")
-    expect_true("btn-danger" %in% plotBtn$getClass())
+    isBtnDanger <- app$get_js("$('#plot_run').hasClass('btn-danger')")
+    expect_true(isBtnDanger)
     
     # expected error in the process (fmError)
-    app$setInputs(xVar = "Species")
+    app$set_inputs(xVar = "Species")
     runClick(app, "plot_run")
     
-    app$waitFor(
-      expr = "$('#plot').hasClass('shiny-output-error-fm-failed');",
-      checkInterval = 500,
+    app$wait_for_js(
+      script = "$('#plot').hasClass('shiny-output-error-fm-failed');",
+      interval = 500,
       timeout = 2000 # 2s
     )
     
@@ -143,18 +132,18 @@ test_that(
     )
     expect_true("fm-failed" %in% plot$type)
     
-    plotBtn <- app$findElement("#plot_run")
-    expect_true("btn-danger" %in% plotBtn$getClass())
+    isBtnDanger_again <- app$get_js("$('#plot_run').hasClass('btn-danger')")
+    expect_true(isBtnDanger_again)
     
     # unexpected error in the process (stop)
-    app$setInputs(xVar = "Sepal.Width")
-    app$setInputs(yVar = "Species")
+    app$set_inputs(xVar = "Sepal.Width")
+    app$set_inputs(yVar = "Species")
     
     runClick(app, "plot_run")
     
-    app$waitFor(
-      expr = "! $('#plot').hasClass('shiny-output-error-validation');",
-      checkInterval = 500,
+    app$wait_for_js(
+      script = "! $('#plot').hasClass('shiny-output-error-validation');",
+      interval = 500,
       timeout = 2000 # 2s
     )
     
@@ -165,7 +154,7 @@ test_that(
     )
     expect_null(plot$type)
     
-    plotBtn <- app$findElement("#plot_run")
-    expect_true("btn-danger" %in% plotBtn$getClass())
+    isBtnDanger_oneMoreTime <- app$get_js("$('#plot_run').hasClass('btn-danger')")
+    expect_true(isBtnDanger_oneMoreTime)
   }
 )
