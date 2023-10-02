@@ -1,13 +1,14 @@
 Package: FutureManager
 Type: Package
-Title: Background operations in shiny
-Version: 0.1.0
+Title: Background Operations in Shiny
+Version: 0.2.7
 Authors@R: c(person("Michal", "Jakubczak", role = c("aut", "cre", "cph"),
-                    email = "michal.jakubczak@ardigen.com"))
+                    email = "michal.jakubczak@ardigen.com"),
+             person("Andreas", "Wernitznig", role = "fnd",
+                    email = "andreas.wernitznig@boehringer-ingelheim.com"))
 Description: Enables background operations in shiny.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Depends:
       R (>= 3.6.0),
       shinyBS
@@ -23,7 +24,7 @@ Imports:
       magrittr,
       methods,
       utils
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests:
     testthat (>= 2.1.0),
     shinytest,

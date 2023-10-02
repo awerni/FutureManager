@@ -2,6 +2,12 @@
 #' 
 #' Manages the background processes and also keeps the state.
 #' FutureManager is designed to work with fmRunButton. See demo() for details
+#' 
+#' See demo app (both) for some complete examples:
+#' \itemize{
+#'   \item{With run button:}{ \code{\link{demo}} }
+#'   \item{Without run button:}{ \code{\link{demo_noButton}} }
+#' }
 #' @export
 FutureManager <- R6::R6Class(
   classname = "FutureManager",
@@ -11,11 +17,13 @@ FutureManager <- R6::R6Class(
     #' @param input shiny input object
     #' @param session shiny session object
     #' @param opts character, names of options that should be passed to every background process
+    #' @param keepPreviousResults logical, should keep the results from the previous run until the latest ones are available? 
     #' @return MinimalProgress object
-    initialize = function(input, session = shiny::getDefaultReactiveDomain(), opts = c()){
+    initialize = function(input, session = shiny::getDefaultReactiveDomain(), opts = c(), keepPreviousResults = FALSE){
       private$opts <- opts
       private$input <- input
       private$session <- session
+      private$keepPreviousResults <- keepPreviousResults
       
       invisible(self)
     },
@@ -30,13 +38,13 @@ FutureManager <- R6::R6Class(
     #' @return self
     showProgress = function(taskId, label, statusVar, millis = 500, session = shiny::getDefaultReactiveDomain()) {
       pb <- MinimalProgress$new(paste0(taskId, "_progress"), session)
+      private$pb[[taskId]] <- pb
       
-      shiny::observe({
+      private$observers[[taskId]] <- shiny::observe({
         statusVar()
         
         task <- private$getTask(taskId)
         if (is.null(task)){
-          pb$close()
           return()
         }
         
@@ -67,9 +75,10 @@ FutureManager <- R6::R6Class(
     #' background process
     #' @param finally NULL or function, that will be executed after the process 
     #' finishes. Function should accept 1 argument, the process status (string)
+    #' @param seed passed to future::future
     #' @param ... arguments passed to future::future
     #' @return self
-    run = function(taskId, fun, args, statusVar, opts = c(), finally = NULL, ...){
+    run = function(taskId, fun, args, statusVar, opts = c(), finally = NULL, seed = TRUE, ...){
       if (private$taskExists(taskId)) {
         warning("Task '", taskId, "' is already running!")
         return(invisible(self))
@@ -83,11 +92,14 @@ FutureManager <- R6::R6Class(
       )
       private$addTask(task)
       
-      statusVar(fmStatus(
-        id = task$id,
-        status = "running",
-        message = "Task is running"
-      ))
+      oldStatus <- shiny::isolate(statusVar())
+      if (!private$keepPreviousResults || !is.fmStatus(oldStatus) || oldStatus[["status"]] != "success"){
+        statusVar(fmStatus(
+          id = task$id,
+          status = "running",
+          message = "Task is running"
+        ))
+      }
       
       args[["task"]] <- task
       
@@ -103,7 +115,7 @@ FutureManager <- R6::R6Class(
             stop(e)
           }
         )
-      }, ...)
+      }, seed = seed, ...)
       
       result <- promises::then(
         promise = result, 
@@ -145,7 +157,7 @@ FutureManager <- R6::R6Class(
         onFinally = function() {
           if (file.exists(task$outFile)) file.remove(task$outFile)
           if (fmIsInterrupted(task)) file.remove(task$cancelFile)
-          status <- statusVar()$status
+          status <- statusVar()[["status"]]
           if (is.function(finally)) finally(status) # user defined action
           private$removeTask(task$id)
         }
@@ -257,7 +269,7 @@ FutureManager <- R6::R6Class(
     #' @description 
     #' Register run observer
     #' @param inputId character string, the button ID
-    #' @param label character string, the progress bar label
+    #' @param label character string, the progress bar label (used only if progress = TRUE)
     #' @param statusVar reactiveVal object that is linked with the process
     #' @param longFun long running function, see run() method for details
     #' @param Args reactive, that should return a named list of additional longFun 
@@ -270,35 +282,37 @@ FutureManager <- R6::R6Class(
     #' @return self
     registerRunObserver = function(inputId, label, statusVar, longFun, Args, 
                                    opts = c(), progress = TRUE, input = NULL){
-      taskId <- paste(inputId, sample(1e6, 1), sep = "_")
+      taskId <- fmGenerateTaskId(inputId)
+      argsChanged <- FALSE
       
-      if (is.null(input)){
+      if (is.null(input)) {
         input <- private$input
-      }
-      
-      if (progress){
-        self$showProgress(taskId, label, statusVar)
       }
       
       shiny::observeEvent(
         eventExpr = input[[inputId]],
         handlerExpr = {
           isTriggered <- input[[inputId]]
-          
           buttonState <- self$getButtonState(inputId)
-          
           if (buttonState$value != isTriggered){
             if (isTriggered){
-              args <- Args()
+              if (progress){
+                self$showProgress(taskId, label, statusVar)
+              }
               
+              argsChanged <<- FALSE
+              args <- Args()
               self$run(
                 taskId = taskId, 
                 fun = longFun, 
                 args = args,
                 statusVar = statusVar,
                 opts = opts,
-                finally = function(status){
-                  fmUpdateRunButton(inputId, status, self, private$session)
+                finally = function(taskStatus){
+                  if (argsChanged && taskStatus == "success"){
+                    taskStatus <- "rerun"
+                  }
+                  fmUpdateRunButton(inputId, taskStatus, self, private$session)
                 }
               )
               status <- "running"
@@ -319,6 +333,7 @@ FutureManager <- R6::R6Class(
       shiny::observeEvent(
         eventExpr = Args(),
         handlerExpr = {
+          argsChanged <<- TRUE
           self$outdateRun(inputId, TRUE)
         }
       )
@@ -327,10 +342,13 @@ FutureManager <- R6::R6Class(
   
   private = list(
     tasks = list(),
+    observers = list(),
+    pb = list(),
     buttonState = list(),
     input = NULL,
     session = NULL,
     opts = c(),
+    keepPreviousResults = FALSE,
     
     addTask = function(task) {
       taskId <- task$id
@@ -339,6 +357,19 @@ FutureManager <- R6::R6Class(
     
     removeTask = function(taskId) {
       private$tasks[[taskId]] <- NULL
+      
+      obs <- private$observers[[taskId]]
+      if (!is.null(obs)){
+        obs$destroy()
+        private$observers[[taskId]] <- NULL
+      }
+      
+      
+      pb <- private$pb[[taskId]]
+      if (!is.null(pb)){
+        pb$close()
+        private$pb[[taskId]] <- NULL
+      }
     },
     
     getTask = function(taskId) {

@@ -2,6 +2,8 @@
 #' 
 #' Creates toggle button, that may be used to control a long background process (start, cancel etc)
 #' 
+#' See \code{\link{fmError}} for some example.
+#' 
 #' @param inputId character string, the button ID
 #' @param fm FutureManager object
 #' @param defaultValue logical, the initial button value
@@ -52,7 +54,7 @@ fmRunButton <- function(inputId, fm, defaultValue = FALSE, blocked = FALSE){
 #' @param fm FutureManager object
 #' @param session shiny session object
 #' 
-#' @return nothing
+#' @return No return value, called for side effects.
 #' @export
 fmUpdateRunButton <- function(inputId, status, fm, session = shiny::getDefaultReactiveDomain()) {
   isSuccess <- status == "success"

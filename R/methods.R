@@ -39,13 +39,23 @@ group_vars.fmStatus <- function(x) {
 }
 
 #' @export
+`$.fmStatus` <- function(x, name) {
+  value <- fmGetValue(x)
+  if (is.fmError(value)){
+    value
+  } else {
+    value[[name]]
+  }
+}
+
+#' @export
 print.fmStatus <- function(x, ...) {
-  cat(sprintf("%s [%s]\n", x$id, x$status))
-  cat("msg:", x$message, "\n")
-  valueString <- if (is.null(x$value)){
+  cat(sprintf("%s [%s]\n", x[["id"]], x[["status"]]))
+  cat("msg:", x[["message"]], "\n")
+  valueString <- if (is.null(x[["value"]])){
     "NULL"
   } else {
-    paste0(class(x$value)[1], "-class object")
+    paste0(class(x[["value"]])[1], "-class object")
   }
   
   cat("value:", valueString, "\n")

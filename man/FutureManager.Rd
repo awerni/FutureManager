@@ -12,6 +12,12 @@ Background calculations in shiny apps
 Manages the background processes and also keeps the state.
 FutureManager is designed to work with fmRunButton. See demo() for details
 
+See demo app (both) for some complete examples:
+\itemize{
+  \item{With run button:}{ \code{\link{demo}} }
+  \item{Without run button:}{ \code{\link{demo_noButton}} }
+}
+
 
 Note that the long function must be able to detect the cancel. See 
 fmIsInterrupted() for details
@@ -41,7 +47,8 @@ Create a new manager object
 \if{html}{\out{<div class="r">}}\preformatted{FutureManager$new(
   input,
   session = shiny::getDefaultReactiveDomain(),
-  opts = c()
+  opts = c(),
+  keepPreviousResults = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -53,6 +60,8 @@ Create a new manager object
 \item{\code{session}}{shiny session object}
 
 \item{\code{opts}}{character, names of options that should be passed to every background process}
+
+\item{\code{keepPreviousResults}}{logical, should keep the results from the previous run until the latest ones are available?}
 }
 \if{html}{\out{</div>}}
 }
@@ -107,6 +116,7 @@ Run background process
   statusVar,
   opts = c(),
   finally = NULL,
+  seed = TRUE,
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -128,6 +138,8 @@ background process}
 
 \item{\code{finally}}{NULL or function, that will be executed after the process 
 finishes. Function should accept 1 argument, the process status (string)}
+
+\item{\code{seed}}{passed to future::future}
 
 \item{\code{...}}{arguments passed to future::future}
 }
@@ -288,7 +300,7 @@ Register run observer
 \describe{
 \item{\code{inputId}}{character string, the button ID}
 
-\item{\code{label}}{character string, the progress bar label}
+\item{\code{label}}{character string, the progress bar label (used only if progress = TRUE)}
 
 \item{\code{statusVar}}{reactiveVal object that is linked with the process}
 
